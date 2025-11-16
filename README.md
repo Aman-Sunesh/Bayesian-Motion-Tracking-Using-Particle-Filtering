@@ -13,17 +13,14 @@ The core work is contained in the notebook:
 
 ## 1. Problem Overview
 
-We consider a 2D latent state \( z_t \in \mathbb{R}^2 \) describing the rat’s position and a
-2D observation \( x_t \in \mathbb{R}^2 \) produced by noisy sensors. The dynamics are given by:
+We consider a 2D latent state $z_t \in \mathbb{R}^2$ describing the rat’s position and a
+2D observation $x_t \in \mathbb{R}^2$ produced by noisy sensors. The dynamics are given by:
 
-- **Latent transition**: \
-  `latent_sample(z_t) -> z_{t+1}`  
-- **Observation model**: \
-  `observation_sample(z_t) -> x_t`  
-- **Observation likelihood**: \
-  `observation_probability(z_t, x_t) = p(x_t | z_t)`
+- **Latent transition**: `latent_sample(z_t) -> z_{t+1}`  
+- **Observation model**: `observation_sample(z_t) -> x_t`  
+- **Observation likelihood**: `observation_probability(z_t, x_t) = p(x_t \mid z_t)`
 
-Both the transition and observation distributions are **non‑Gaussian**, built from mixtures of
+Both the transition and observation distributions are **non-Gaussian**, built from mixtures of
 Gaussians and nonlinear transformations. This makes Kalman filtering inapplicable and motivates
 the use of a particle filter.
 
@@ -43,7 +40,7 @@ All logic lives in `particle_filtering.ipynb`.
 We implement:
 
 - `observation_probability(latent, observation)`:  
-  Computes the likelihood \( p(x_t \mid z_t) \) using a mixture of 3 Gaussians with different
+  Computes the likelihood $p(x_t \mid z_t)$ using a mixture of 3 Gaussians with different
   means and covariances.
 
 - `observation_sample(latent)`:  
@@ -74,7 +71,7 @@ pf = ParticleFiltering(
 **Key methods**
 
 - `particle_filter(observations, n_samples)`  
-  - Initializes particles from a Gaussian prior \( \mathcal{N}(\mu_0, \Sigma_0) \).
+  - Initializes particles from a Gaussian prior $\mathcal{N}(\mu_0, \Sigma_0)$.  
   - For each time step:
     1. **Resample** particles according to their weights.
     2. **Propagate** them through `latent_sample`.
@@ -83,17 +80,15 @@ pf = ParticleFiltering(
 
 - `compute_w(observation_t, z_samples_t)`  
   - Computes importance weights
-    \[
-    w_i \propto p(x_t \mid z_t^{(i)})
-    \]
+    $w_i \propto p(x_t \mid z_t^{(i)})$
     using `observation_probability`, and normalizes so that the weights sum to 1.
 
 - `predict(final_latent_samples, final_weights, n_future)`  
-  - Starts from the final filtered particle set at time \( T \).
+  - Starts from the final filtered particle set at time $T$.
   - Repeatedly:
     1. Resamples according to the final weights.
     2. Propagates latent states forward with `latent_sample`.
-    3. Generates pseudo‑observations with `observation_sample`.
+    3. Generates pseudo-observations with `observation_sample`.
   - Since no new observations arrive, all future weights are uniform.
   - Returns latent and observation samples for future time steps.
 
@@ -122,7 +117,7 @@ Configuration:
 - Number of particles: `N = 100`
 
 We run `particle_filter` on the full observation sequence and compute the weighted mean of
-particles at each time step to estimate \( \mathbb{E}[z_t \mid x_{1:t}] \).
+particles at each time step to estimate $\mathbb{E}[z_t \mid x_{1:t}]$.
 
 **Qualitative answer**
 
@@ -143,13 +138,13 @@ Configuration:
 - Then we use `predict` to simulate **20 future time steps** of latent states and observations.
 
 We compute the mean and standard deviation of the predicted latent and observed position in X,
-and overlay the true trajectory with ±2‑standard‑deviation prediction bands.
+and overlay the true trajectory with $\pm 2$-standard-deviation prediction bands.
 
 **Qualitative answer**
 
 > The particle filter predicts future observations reasonably well but with growing uncertainty
 > over time. In both the latent-state and observation plots, the true trajectory stays mostly
-> within the ±2-standard-deviation prediction bands, showing that the filter captures the general
+> within the $\pm 2$-standard-deviation prediction bands, showing that the filter captures the general
 > direction and variability of the rat’s motion. However, the confidence intervals widen as we
 > move further into the future because there are no new observations after time 80, so the filter
 > relies only on the stochastic latent dynamics, causing uncertainty to accumulate. Overall, the
@@ -211,6 +206,6 @@ You can extend this structure with additional modules, figures, or reports as th
 
 ## 6. License
 
-You may choose a license appropriate for coursework, personal projects, or open‑source sharing.
+You may choose a license appropriate for coursework, personal projects, or open-source sharing.
 If unspecified, this repository currently has **no explicit license**, meaning all rights are
 reserved by default.
